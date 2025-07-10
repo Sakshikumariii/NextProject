@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react';
 
 const formatTime = (time: number) => time.toString().padStart(2, '0');
 
 function CountdownTimer() {
-  const targetDate = new Date('2025-12-31T23:59:59'); 
-
-  const calculateTimeLeft = () => {
+  const calculateTimeLeft = useCallback(() => {
+    const targetDate = new Date('2025-12-31T23:59:59'); 
     const now = new Date();
     const difference = targetDate.getTime() - now.getTime();
 
@@ -17,7 +16,7 @@ function CountdownTimer() {
       m: Math.floor((difference / (1000 * 60)) % 60),
       s: Math.floor((difference / 1000) % 60),
     } : { d: 0, h: 0, m: 0, s: 0 };
-  };
+  }, []);
 
   const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
@@ -26,7 +25,7 @@ function CountdownTimer() {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [calculateTimeLeft]);
 
   const { d, h, m, s } = timeLeft;
 
